@@ -1,23 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { getLocalStorage } from "./components/utility-funcs.js";
+import {
+  CreateIssue,
+  Issues,
+  Login,
+  Register,
+  Navigation,
+  Protected,
+  IssueEdit,
+  Footer,
+} from "./components/index.js";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        overflowX: "hidden",
+        paddingBottom: "50px",
+      }}
+    >
+      <BrowserRouter>
+        <Navigation createIssue={!!getLocalStorage("token")} />
+        <Switch>
+          <Route exact path="/">
+            <Login isLoggedIn={!!getLocalStorage("token")} />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/issues">
+            <Protected
+              isLoggedIn={!!getLocalStorage("token")}
+              children={<Issues token={getLocalStorage("token")} />}
+            />
+          </Route>
+          <Route path="/create-issue">
+            <Protected
+              isLoggedIn={!!getLocalStorage("token")}
+              children={<CreateIssue token={getLocalStorage("token")} />}
+            />
+          </Route>
+          <Route path="/issue-edit/:id">
+            <Protected
+              isLoggedIn={!!getLocalStorage("token")}
+              children={<IssueEdit token={getLocalStorage("token")} />}
+            />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+      <Footer />
     </div>
   );
 }
