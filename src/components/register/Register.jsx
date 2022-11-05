@@ -1,9 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 import axios from "axios";
 
 export const Register = () => {
+  let [error, setError] = useState();
   let [user, setUser] = useState({
     name: "",
     email: "",
@@ -14,20 +16,33 @@ export const Register = () => {
       await axios.post("https://challenge.broobe.net/api/v1/users", user);
       window.location.replace("/");
     } catch (error) {
-      console.log(error);
-      throw new Error(error);
+      setError(
+        `Api error. Please check that all fields are properly filled and try again.`
+      );
     }
   };
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
+          flexDirection: "column",
           marginBottom: "5px",
+          width: "25rem",
         }}
       >
+        {error ? (
+          <Alert className="text-wrap" transition variant="danger">
+            {error}
+          </Alert>
+        ) : null}
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
@@ -54,8 +69,6 @@ export const Register = () => {
             />
           </Form.Group>
         </Form>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
         <Button onClick={registerUser} type="button" variant="primary">
           Register
         </Button>
